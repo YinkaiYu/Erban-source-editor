@@ -1,0 +1,498 @@
+/* ============================================================
+   贰伴 ErBan — WeChat Source Editor Styles
+   Design: "Scholarly Refined" — ink tones + jade green accents
+   ============================================================ */
+
+/* ---- CSS Variables ---- */
+:root {
+  --eb-ink: #1a1d23;
+  --eb-ink-light: #252830;
+  --eb-jade: #00a86b;
+  --eb-jade-hover: #008f5a;
+  --eb-jade-glow: rgba(0, 168, 107, 0.15);
+  --eb-slate: #2c3038;
+  --eb-slate-light: #363b44;
+  --eb-slate-border: #3e434d;
+  --eb-text: #cdd6e0;
+  --eb-text-dim: #6b7280;
+  --eb-text-bright: #e8edf3;
+  --eb-white: #f8f9fb;
+  --eb-preview-bg: #f4f5f7;
+  --eb-radius: 10px;
+  --eb-radius-sm: 6px;
+  --eb-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --eb-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- Toolbar Button ---- */
+.wx-edit-source-btn {
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 5px 14px !important;
+  border: 1px solid var(--eb-jade) !important;
+  border-radius: var(--eb-radius-sm) !important;
+  background: linear-gradient(135deg, var(--eb-jade), #009e63) !important;
+  color: #fff !important;
+  margin-left: 8px !important;
+  transition: all var(--eb-transition) !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  line-height: 22px !important;
+  user-select: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 0 0 2px var(--eb-jade-glow) !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Toolbar li-item variant — blends into WeChat's native toolbar */
+li.wx-edit-source-btn,
+.tpl_item.wx-edit-source-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 14px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  border: none !important;
+  border-left: 1px solid #e5e5e5 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #00a86b !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  transition: color 0.15s, background 0.15s !important;
+}
+li.wx-edit-source-btn:hover,
+.tpl_item.wx-edit-source-btn:hover {
+  color: #008f5a !important;
+  background: rgba(0, 168, 107, 0.06) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Floating button variant (fallback) */
+div.wx-edit-source-btn[style*="fixed"] {
+  display: inline-flex !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 5px 14px !important;
+  border: 1px solid var(--eb-jade) !important;
+  border-radius: var(--eb-radius-sm) !important;
+  background: linear-gradient(135deg, var(--eb-jade), #009e63) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  cursor: pointer !important;
+  transition: all var(--eb-transition) !important;
+  line-height: 22px !important;
+}
+div.wx-edit-source-btn[style*="fixed"]:hover {
+  box-shadow: 0 4px 16px rgba(0, 168, 107, 0.35) !important;
+  transform: none !important;
+}
+.wx-edit-source-btn::before {
+  content: '<>';
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.wx-edit-source-btn:hover {
+  background: linear-gradient(135deg, #00b876, var(--eb-jade)) !important;
+  border-color: #00b876 !important;
+  box-shadow: 0 2px 8px rgba(0, 168, 107, 0.3), 0 0 0 3px var(--eb-jade-glow) !important;
+  transform: translateY(-1px) !important;
+}
+.wx-edit-source-btn:active {
+  transform: translateY(0) !important;
+}
+
+/* ---- Overlay ---- */
+.wx-source-overlay,
+.wx-source-overlay * {
+  box-sizing: border-box !important;
+}
+.wx-source-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(10, 12, 16, 0.65) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  z-index: 2147483640 !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  animation: ebFadeIn 0.2s ease-out !important;
+}
+@keyframes ebFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---- Dialog ---- */
+.wx-source-dialog {
+  background: var(--eb-ink) !important;
+  border-radius: var(--eb-radius) !important;
+  box-shadow: var(--eb-shadow) !important;
+  width: 92vw !important;
+  height: 88vh !important;
+  max-width: 1400px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: ebDialogIn 0.25s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+  border: 1px solid var(--eb-slate-border) !important;
+}
+@keyframes ebDialogIn {
+  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ---- Header ---- */
+.wx-source-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 20px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  background: var(--eb-ink-light) !important;
+  border-bottom: 1px solid var(--eb-slate-border) !important;
+}
+.wx-source-header-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.wx-source-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--eb-text-bright) !important;
+  letter-spacing: 0.02em !important;
+}
+.wx-source-header-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+/* ---- Buttons (header/footer) ---- */
+.wx-source-btn {
+  padding: 5px 14px !important;
+  border: 1px solid var(--eb-slate-border) !important;
+  border-radius: var(--eb-radius-sm) !important;
+  background: var(--eb-slate) !important;
+  color: var(--eb-text) !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 18px !important;
+  transition: all var(--eb-transition) !important;
+  outline: none !important;
+  letter-spacing: 0.01em !important;
+}
+.wx-source-btn:hover {
+  background: var(--eb-slate-light) !important;
+  color: var(--eb-text-bright) !important;
+  border-color: #555 !important;
+}
+.wx-source-btn-apply {
+  background: linear-gradient(135deg, var(--eb-jade), #009e63) !important;
+  border-color: var(--eb-jade) !important;
+  color: #fff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  padding: 6px 20px !important;
+  font-weight: 600 !important;
+}
+.wx-source-btn-apply:hover {
+  background: linear-gradient(135deg, #00b876, var(--eb-jade)) !important;
+  border-color: #00b876 !important;
+  box-shadow: 0 2px 8px rgba(0, 168, 107, 0.3) !important;
+}
+.wx-source-btn-cancel {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--eb-text-dim) !important;
+}
+.wx-source-btn-cancel:hover {
+  color: var(--eb-text-bright) !important;
+  background: var(--eb-slate) !important;
+}
+.wx-source-btn-close {
+  background: none !important;
+  border: none !important;
+  color: var(--eb-text-dim) !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  padding: 2px 6px !important;
+  line-height: 1 !important;
+  border-radius: 4px !important;
+  transition: all var(--eb-transition) !important;
+}
+.wx-source-btn-close:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ---- Body ---- */
+.wx-source-body {
+  flex: 1 !important;
+  display: flex !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+
+/* ---- Code panel ---- */
+.wx-source-code-panel {
+  flex: 1 !important;
+  display: flex !important;
+  overflow: hidden !important;
+  min-width: 0 !important;
+  border-right: 1px solid var(--eb-slate-border) !important;
+  background: #16181d !important;
+}
+
+/* ---- Line numbers ---- */
+.wx-source-line-numbers {
+  width: 48px !important;
+  min-width: 48px !important;
+  background: #16181d !important;
+  color: #4a5058 !important;
+  text-align: right !important;
+  padding: 14px 10px 14px 0 !important;
+  font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  user-select: none !important;
+  overflow: hidden !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.04) !important;
+  white-space: pre !important;
+}
+
+/* ---- Textarea ---- */
+.wx-source-textarea {
+  flex: 1 !important;
+  padding: 14px 18px !important;
+  margin: 0 !important;
+  border: none !important;
+  outline: none !important;
+  resize: none !important;
+  font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
+  font-size: 13.5px !important;
+  line-height: 1.65 !important;
+  tab-size: 2 !important;
+  -moz-tab-size: 2 !important;
+  background: #16181d !important;
+  color: #c8ccd4 !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  caret-color: var(--eb-jade) !important;
+}
+.wx-source-textarea::placeholder {
+  color: #4a5058 !important;
+  font-style: italic !important;
+}
+.wx-source-textarea:focus {
+  outline: none !important;
+}
+.wx-source-textarea::-webkit-scrollbar {
+  width: 6px !important;
+}
+.wx-source-textarea::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+.wx-source-textarea::-webkit-scrollbar-thumb {
+  background: var(--eb-slate-border) !important;
+  border-radius: 3px !important;
+}
+.wx-source-textarea::-webkit-scrollbar-thumb:hover {
+  background: #555 !important;
+}
+
+/* ---- Preview panel ---- */
+.wx-source-preview-panel {
+  width: 45% !important;
+  min-width: 300px !important;
+  overflow-y: auto !important;
+  background: var(--eb-preview-bg) !important;
+  display: none !important;
+}
+.wx-source-preview-panel.visible {
+  display: block !important;
+}
+.wx-source-preview-note {
+  margin: 0 !important;
+  padding: 10px 18px !important;
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  font-size: 11.5px !important;
+  letter-spacing: 0.01em !important;
+  border-bottom: 1px solid #fcd34d !important;
+  line-height: 1.5 !important;
+}
+.wx-source-preview-content {
+  padding: 24px !important;
+  font-size: 15px !important;
+  color: #1f2937 !important;
+  line-height: 1.85 !important;
+  word-break: break-word !important;
+  max-width: 680px !important;
+  margin: 0 auto !important;
+}
+.wx-source-preview-content img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* ---- Footer ---- */
+.wx-source-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 20px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  background: var(--eb-ink-light) !important;
+  border-top: 1px solid var(--eb-slate-border) !important;
+}
+.wx-source-status {
+  font-size: 12px !important;
+  color: var(--eb-text-dim) !important;
+  letter-spacing: 0.01em !important;
+}
+.wx-source-status.error {
+  color: #ef4444 !important;
+  font-weight: 500 !important;
+}
+.wx-source-status.success {
+  color: var(--eb-jade) !important;
+  font-weight: 500 !important;
+}
+.wx-source-footer-right {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+/* ---- Checkbox label ---- */
+.wx-source-check-label {
+  font-size: 12px !important;
+  color: var(--eb-text-dim) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: color var(--eb-transition) !important;
+}
+.wx-source-check-label:hover {
+  color: var(--eb-text) !important;
+}
+.wx-source-check-label input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 1.5px solid var(--eb-slate-border) !important;
+  border-radius: 3px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  position: relative !important;
+  transition: all var(--eb-transition) !important;
+  flex-shrink: 0 !important;
+}
+.wx-source-check-label input[type="checkbox"]:checked {
+  background: var(--eb-jade) !important;
+  border-color: var(--eb-jade) !important;
+}
+.wx-source-check-label input[type="checkbox"]:checked::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 4px !important;
+  top: 1px !important;
+  width: 5px !important;
+  height: 9px !important;
+  border: solid #fff !important;
+  border-width: 0 2px 2px 0 !important;
+  transform: rotate(45deg) !important;
+}
+
+/* ---- Toast ---- */
+.wx-source-toast {
+  position: fixed !important;
+  top: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  padding: 10px 22px !important;
+  border-radius: var(--eb-radius-sm) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  animation: ebToastIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+}
+@keyframes ebToastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.wx-source-toast.success {
+  background: var(--eb-jade) !important;
+}
+.wx-source-toast.error {
+  background: #dc2626 !important;
+}
+.wx-source-toast.info {
+  background: #3b82f6 !important;
+}
+
+/* ---- ErBan extra toolbar row (壹伴-style, inside #edui1) ---- */
+#erban-extra-tools {
+  display: flex !important;
+  align-items: center !important;
+  padding: 6px 12px !important;
+  border-top: 1px solid #e8e8e8 !important;
+  background: #fafafa !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+#erban-extra-tools .mpa-extra-tools-placeholder {
+  flex: 1 !important;
+}
+#erban-extra-tools-container-wrapper {
+  display: flex !important;
+  align-items: center !important;
+}
+#erban-extra-tools-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Button inside extra-tools should be compact and match the toolbar style */
+#erban-extra-tools-container .wx-edit-source-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 4px 10px !important;
+  font-size: 12px !important;
+  border: 1px solid var(--eb-jade) !important;
+  border-radius: var(--eb-radius-sm) !important;
+  background: linear-gradient(135deg, var(--eb-jade), #009e63) !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  line-height: 20px !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+}
+#erban-extra-tools-container .wx-edit-source-btn:hover {
+  background: linear-gradient(135deg, #00b876, var(--eb-jade)) !important;
+}
