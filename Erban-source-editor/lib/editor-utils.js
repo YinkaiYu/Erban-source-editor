@@ -27,6 +27,28 @@
     return /\.(html|htm|txt)$/.test(name);
   }
 
+  function getInlineStyleValue(styleText, propName) {
+    var parts = String(styleText || '').split(';');
+    var target = String(propName || '').toLowerCase();
+    for (var i = 0; i < parts.length; i++) {
+      var piece = parts[i];
+      var colon = piece.indexOf(':');
+      if (colon === -1) continue;
+      var name = piece.slice(0, colon).trim().toLowerCase();
+      if (name === target) return piece.slice(colon + 1).trim();
+    }
+    return '';
+  }
+
+  function mergeParagraphStyle(existingStyle, baseStyle) {
+    var base = String(baseStyle || '').replace(/;?\s*$/, '');
+    var textAlign = getInlineStyleValue(existingStyle, 'text-align');
+    if (textAlign && !getInlineStyleValue(base, 'text-align')) {
+      base += ';text-align:' + textAlign;
+    }
+    return base;
+  }
+
   function isJavascriptUrl(value) {
     return /^\s*javascript:/i.test(String(value || ''));
   }
@@ -96,6 +118,7 @@
   return {
     isToggleShortcut: isToggleShortcut,
     isSupportedImportFile: isSupportedImportFile,
+    mergeParagraphStyle: mergeParagraphStyle,
     preparePreviewHTML: preparePreviewHTML
   };
 });

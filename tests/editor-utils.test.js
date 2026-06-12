@@ -7,6 +7,7 @@ const { test } = require('node:test');
 const {
   isToggleShortcut,
   isSupportedImportFile,
+  mergeParagraphStyle,
   preparePreviewHTML
 } = require('../Erban-source-editor/lib/editor-utils.js');
 
@@ -52,6 +53,18 @@ test('prepares preview html by removing active content and preserving layout sty
   assert.doesNotMatch(result, /javascript:/i);
 });
 
+test('preserves paragraph text alignment while adding WeChat paragraph defaults', () => {
+  const result = mergeParagraphStyle(
+    'text-align: center;color: rgb(255, 76, 65);',
+    'margin:0;font-size:16px;line-height:1.75;'
+  );
+
+  assert.match(result, /margin:\s*0/);
+  assert.match(result, /font-size:\s*16px/);
+  assert.match(result, /line-height:\s*1\.75/);
+  assert.match(result, /text-align:\s*center/);
+});
+
 test('keeps real article fixture layout and image markers in preview html', () => {
   const fixture = fs.readFileSync(path.join(__dirname, 'fixtures/example2.html'), 'utf8');
   const result = preparePreviewHTML(fixture);
@@ -61,4 +74,14 @@ test('keeps real article fixture layout and image markers in preview html', () =
   assert.match(result, /overflow-x:\s*auto/);
   assert.match(result, /rich_pages wxw-img/);
   assert.match(result, /src="https:\/\/mmbiz\.qpic\.cn/);
+});
+
+test('preview stylesheet supports WeChat links and does not collapse swipe tracks', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../Erban-source-editor/editor.css'), 'utf8');
+
+  assert.doesNotMatch(css, /\.wx-source-preview-content\s*\{[^}]*text-align:\s*justify\s*!important/s);
+  assert.doesNotMatch(css, /\.wx-source-preview-content\s+\*\s*\{[^}]*max-width:\s*100%\s*!important/s);
+  assert.match(css, /\.wx-source-preview-content\s+a\.normal_text_link::before/);
+  assert.match(css, /\.wx-source-preview-content\s+\[style\*="width: 200%"\]/);
+  assert.match(css, /\.wx-source-preview-content\s+\[style\*="width: 300%"\]/);
 });

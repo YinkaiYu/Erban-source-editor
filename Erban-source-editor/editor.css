@@ -366,12 +366,22 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   letter-spacing: 0.034em !important;
   word-break: break-word !important;
   overflow-wrap: break-word !important;
-  text-align: justify !important;
   background: #fff !important;
 }
 .wx-source-preview-content * {
-  max-width: 100% !important;
   box-sizing: border-box !important;
+}
+.wx-source-preview-content > *,
+.wx-source-preview-content p,
+.wx-source-preview-content section,
+.wx-source-preview-content div {
+  max-width: 100% !important;
+}
+.wx-source-preview-content [style*="width: 200%"],
+.wx-source-preview-content [style*="width:200%"],
+.wx-source-preview-content [style*="width: 300%"],
+.wx-source-preview-content [style*="width:300%"] {
+  max-width: none !important;
 }
 .wx-source-preview-content img {
   max-width: 100% !important;
@@ -384,6 +394,18 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
 .wx-source-preview-content a {
   color: #576b95 !important;
   text-decoration: none !important;
+}
+.wx-source-preview-content a.normal_text_link::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin-right: 3px !important;
+  vertical-align: -2px !important;
+  background-image: url("data:image/svg+xml,%3Csvg%20viewBox%3D%270%200%2014%2014%27%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%3E%3Cpath%20d%3D%27M3%201.5h5.2L11%204.3V12.5H3z%27%20fill%3D%27none%27%20stroke%3D%27%23576b95%27%20stroke-width%3D%271.2%27/%3E%3Cpath%20d%3D%27M8.2%201.5v3h2.8%27%20fill%3D%27none%27%20stroke%3D%27%23576b95%27%20stroke-width%3D%271.2%27/%3E%3Cpath%20d%3D%27M5%207h4M5%209.2h3%27%20stroke%3D%27%23576b95%27%20stroke-width%3D%271.2%27%20stroke-linecap%3D%27round%27/%3E%3C/svg%3E") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 14px 14px !important;
 }
 .wx-source-preview-content p {
   clear: both !important;

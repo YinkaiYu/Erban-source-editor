@@ -184,6 +184,10 @@
   // ============================================================
   //  HTML Formatting (壹伴-style: semantic cleanup + indent)
   // ============================================================
+  function mergeParagraphStyle(existingStyle, baseStyle) {
+    return utils.mergeParagraphStyle ? utils.mergeParagraphStyle(existingStyle, baseStyle) : baseStyle;
+  }
+
   function formatHTML(html) {
     if (!html) return '';
     var parser = new DOMParser();
@@ -209,10 +213,10 @@
       var hasImg = p.querySelector('img');
 
       if (isSpacing) {
-        p.setAttribute('style', 'margin:0;font-size:16px;line-height:1.75;');
+        p.setAttribute('style', mergeParagraphStyle(p.getAttribute('style'), 'margin:0;font-size:16px;line-height:1.75;'));
         p.innerHTML = '<br>';
       } else if (isCaption) {
-        p.setAttribute('style', 'margin:0;font-size:14px;color:#888;line-height:1.75;');
+        p.setAttribute('style', mergeParagraphStyle(p.getAttribute('style'), 'margin:0;font-size:14px;color:#888;line-height:1.75;'));
       } else if (hasImg) {
         // Keep image paragraphs mostly intact, just add basic styling
         var s = p.getAttribute('style') || '';
@@ -221,7 +225,7 @@
         p.setAttribute('style', s.replace(/^;|;$/g, ''));
       } else {
         // Body paragraph - clean and set 16px
-        p.setAttribute('style', 'margin:0;font-size:16px;line-height:1.75;');
+        p.setAttribute('style', mergeParagraphStyle(p.getAttribute('style'), 'margin:0;font-size:16px;line-height:1.75;'));
       }
     }
 
