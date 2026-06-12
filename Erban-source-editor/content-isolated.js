@@ -46,7 +46,10 @@
       var panel = document.getElementById('wsrc-preview-panel');
       var content = document.getElementById('wsrc-preview-content');
       var ta = document.getElementById('wsrc-textarea');
-      if (cb.checked) { if (panel) panel.classList.add('visible'); if (content && ta) content.innerHTML = sanitizeForWeChat(ta.value); }
+      if (cb.checked) {
+        if (panel) panel.classList.add('visible');
+        if (content && ta) content.innerHTML = utils.preparePreviewHTML ? utils.preparePreviewHTML(ta.value) : sanitizeForWeChat(ta.value);
+      }
       else { if (panel) panel.classList.remove('visible'); }
     };
   }
@@ -303,7 +306,7 @@
     dialogEl.innerHTML = [
       '<div class="wx-source-dialog">',
       ' <div class="wx-source-header"><div class="wx-source-header-left"><span class="wx-source-title">贰伴 · HTML 源代码</span></div><div class="wx-source-header-right"><button class="wx-source-btn" id="wsrc-btn-format">格式化</button><label class="wx-source-check-label"><input type="checkbox" id="wsrc-toggle-preview"> 实时预览</label><button class="wx-source-btn-close" id="wsrc-btn-close">&times;</button></div></div>',
-      ' <div class="wx-source-body"><div class="wx-source-code-panel"><div class="wx-source-line-numbers" id="wsrc-line-numbers">1</div><textarea class="wx-source-textarea" id="wsrc-textarea" placeholder="在此编辑 HTML 源代码..." spellcheck="false" wrap="off"></textarea></div><div class="wx-source-preview-panel" id="wsrc-preview-panel"><div class="wx-source-preview-note">注意：实际显示效果以公众号发布为准，部分样式可能在微信客户端中被过滤。</div><div id="wsrc-preview-content"></div></div></div>',
+      ' <div class="wx-source-body"><div class="wx-source-code-panel"><div class="wx-source-line-numbers" id="wsrc-line-numbers">1</div><textarea class="wx-source-textarea" id="wsrc-textarea" placeholder="在此编辑 HTML 源代码..." spellcheck="false" wrap="off"></textarea></div><div class="wx-source-preview-panel" id="wsrc-preview-panel"><div class="wx-source-preview-note">手机预览按微信公众号正文阅读态模拟，实际发布效果以微信客户端为准。</div><div class="wx-source-preview-stage"><div class="wx-source-phone-frame"><div class="wx-source-preview-content" id="wsrc-preview-content"></div></div></div></div></div>',
       ' <div class="wx-source-footer"><span class="wx-source-status" id="wsrc-status">就绪</span><div class="wx-source-footer-right"><button class="wx-source-btn wx-source-btn-cancel" id="wsrc-btn-cancel">取消</button><button class="wx-source-btn wx-source-btn-apply" id="wsrc-btn-apply">应用</button></div></div>',
       '</div>'
     ].join('');
@@ -353,7 +356,13 @@
       dialogEl.onclick = function (e) { if (e.target === dialogEl) closeEditor(); };
 
       function updateLines() { var lines=textarea.value.split('\n'),n=''; for(var i=1;i<=Math.max(lines.length,1);i++)n+=i+'\n'; lineNumbers.textContent=n; }
-      function updatePrev() { previewContent.innerHTML = sanitizeForWeChat(textarea.value); }
+      function updatePrev() {
+        try {
+          previewContent.innerHTML = utils.preparePreviewHTML ? utils.preparePreviewHTML(textarea.value) : sanitizeForWeChat(textarea.value);
+        } catch (err) {
+          previewContent.textContent = '预览渲染失败: ' + err.message;
+        }
+      }
       function setStat(t,m){ statusEl.textContent=m; statusEl.className='wx-source-status '+t; }
     } catch (e) {
       console.error('[贰伴] bindDialogEvents error:', e);

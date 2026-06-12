@@ -316,36 +316,82 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
 /* ---- Preview panel ---- */
 .wx-source-preview-panel {
   width: 45% !important;
-  min-width: 300px !important;
-  overflow-y: auto !important;
+  min-width: 360px !important;
+  overflow: hidden !important;
   background: var(--eb-preview-bg) !important;
   display: none !important;
 }
 .wx-source-preview-panel.visible {
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 .wx-source-preview-note {
   margin: 0 !important;
-  padding: 10px 18px !important;
-  background: #fef3c7 !important;
-  color: #92400e !important;
+  padding: 9px 18px !important;
+  background: #fff7d6 !important;
+  color: #7a4b00 !important;
   font-size: 11.5px !important;
   letter-spacing: 0.01em !important;
-  border-bottom: 1px solid #fcd34d !important;
+  border-bottom: 1px solid #eed27b !important;
   line-height: 1.5 !important;
 }
-.wx-source-preview-content {
-  padding: 24px !important;
-  font-size: 15px !important;
-  color: #1f2937 !important;
-  line-height: 1.85 !important;
-  word-break: break-word !important;
-  max-width: 680px !important;
+.wx-source-preview-stage {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 22px 0 28px !important;
+  background: #e8ebef !important;
+}
+.wx-source-phone-frame {
+  width: min(390px, calc(100% - 32px)) !important;
+  min-height: calc(100% - 4px) !important;
   margin: 0 auto !important;
+  padding: 18px 16px 28px !important;
+  background: #fff !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif !important;
+  box-shadow: 0 8px 28px rgba(32, 38, 46, 0.12) !important;
+}
+.wx-source-preview-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+  font-size: 16px !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0.034em !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-align: justify !important;
+  background: #fff !important;
+}
+.wx-source-preview-content * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 .wx-source-preview-content img {
   max-width: 100% !important;
   height: auto !important;
+  vertical-align: middle !important;
+}
+.wx-source-preview-content svg {
+  max-width: 100% !important;
+}
+.wx-source-preview-content a {
+  color: #576b95 !important;
+  text-decoration: none !important;
+}
+.wx-source-preview-content p {
+  clear: both !important;
+  min-height: 1em !important;
+}
+.wx-source-preview-content section[style*="overflow-x"],
+.wx-source-preview-content div[style*="overflow-x"],
+.wx-source-preview-content section[style*="overflow: auto"],
+.wx-source-preview-content div[style*="overflow: auto"] {
+  max-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 
 /* ---- Footer ---- */
