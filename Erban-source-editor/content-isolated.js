@@ -305,7 +305,7 @@
     dialogEl.className = 'wx-source-overlay';
     dialogEl.innerHTML = [
       '<div class="wx-source-dialog">',
-      ' <div class="wx-source-header"><div class="wx-source-header-left"><span class="wx-source-title">贰伴 · HTML 源代码</span></div><div class="wx-source-header-right"><button class="wx-source-btn" id="wsrc-btn-format">格式化</button><label class="wx-source-check-label"><input type="checkbox" id="wsrc-toggle-preview"> 实时预览</label><button class="wx-source-btn-close" id="wsrc-btn-close">&times;</button></div></div>',
+      ' <div class="wx-source-header"><div class="wx-source-header-left"><span class="wx-source-title">贰伴 · HTML 源代码</span></div><div class="wx-source-header-right"><button class="wx-source-btn" id="wsrc-btn-import">导入 HTML</button><input class="wx-source-file-input" id="wsrc-import-input" type="file" accept=".html,.htm,.txt,text/html,text/plain"><button class="wx-source-btn" id="wsrc-btn-format">格式化</button><label class="wx-source-check-label"><input type="checkbox" id="wsrc-toggle-preview"> 实时预览</label><button class="wx-source-btn-close" id="wsrc-btn-close">&times;</button></div></div>',
       ' <div class="wx-source-body"><div class="wx-source-code-panel"><div class="wx-source-line-numbers" id="wsrc-line-numbers">1</div><textarea class="wx-source-textarea" id="wsrc-textarea" placeholder="在此编辑 HTML 源代码..." spellcheck="false" wrap="off"></textarea></div><div class="wx-source-preview-panel" id="wsrc-preview-panel"><div class="wx-source-preview-note">手机预览按微信公众号正文阅读态模拟，实际发布效果以微信客户端为准。</div><div class="wx-source-preview-stage"><div class="wx-source-phone-frame"><div class="wx-source-preview-content" id="wsrc-preview-content"></div></div></div></div></div>',
       ' <div class="wx-source-footer"><span class="wx-source-status" id="wsrc-status">就绪</span><div class="wx-source-footer-right"><button class="wx-source-btn wx-source-btn-cancel" id="wsrc-btn-cancel">取消</button><button class="wx-source-btn wx-source-btn-apply" id="wsrc-btn-apply">应用</button></div></div>',
       '</div>'
@@ -329,11 +329,40 @@
       var closeBtn = getEl('wsrc-btn-close');
       var cancelBtn = getEl('wsrc-btn-cancel');
       var applyBtn = getEl('wsrc-btn-apply');
+      var importBtn = getEl('wsrc-btn-import');
+      var importInput = getEl('wsrc-import-input');
       var formatBtn = getEl('wsrc-btn-format');
 
       if (closeBtn) closeBtn.onclick = function (e) { e.preventDefault(); closeEditor(); };
       if (cancelBtn) cancelBtn.onclick = function (e) { e.preventDefault(); closeEditor(); };
       if (applyBtn) applyBtn.onclick = function (e) { e.preventDefault(); applyChanges(); };
+      if (importBtn && importInput) {
+        importBtn.onclick = function (e) {
+          e.preventDefault();
+          importInput.value = '';
+          importInput.click();
+        };
+        importInput.onchange = function () {
+          var file = importInput.files && importInput.files[0];
+          if (!file) return;
+          if (utils.isSupportedImportFile && !utils.isSupportedImportFile(file)) {
+            setStat('error', '请选择 HTML 或文本文件');
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function () {
+            textarea.value = String(reader.result || '');
+            isDirty = (textarea.value !== lastSavedContent);
+            updateLines();
+            if (previewToggle.checked) updatePrev();
+            setStat('success', '已导入 ' + file.name + ' — ' + textarea.value.length + ' 个字符');
+          };
+          reader.onerror = function () {
+            setStat('error', '读取失败: ' + file.name);
+          };
+          reader.readAsText(file, 'utf-8');
+        };
+      }
       if (formatBtn) formatBtn.onclick = function (e) { e.preventDefault();
         try { var f = formatHTML(textarea.value); if (f) { textarea.value = f; updateLines(); updatePrev(); setStat('info','已格式化'); } } catch (err) { setStat('error','格式化失败: '+err.message); }
       };

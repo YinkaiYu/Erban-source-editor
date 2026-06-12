@@ -235,6 +235,9 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   color: #fff !important;
   background: rgba(255, 255, 255, 0.06) !important;
 }
+.wx-source-file-input {
+  display: none !important;
+}
 
 /* ---- Body ---- */
 .wx-source-body {
