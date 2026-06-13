@@ -176,3 +176,23 @@ test('editor surface includes syntax highlighting and find controls', () => {
   assert.match(script, /getScrollTopForTextOffset/);
   assert.match(script, /toLowerCase\(\) === 'f'/);
 });
+
+test('editor gutter textarea and highlight share exact code metrics', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../Erban-source-editor/editor.css'), 'utf8');
+
+  assert.match(css, /--eb-code-font:\s*"JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace/);
+  assert.match(css, /--eb-code-font-size:\s*13\.5px/);
+  assert.match(css, /--eb-code-line-height:\s*22px/);
+  assert.match(css, /--eb-code-padding-y:\s*14px/);
+  assert.match(css, /\.wx-source-line-numbers\s*\{[^}]*font-family:\s*var\(--eb-code-font\)/s);
+  assert.match(css, /\.wx-source-line-numbers\s*\{[^}]*font-size:\s*var\(--eb-code-font-size\)/s);
+  assert.match(css, /\.wx-source-line-numbers\s*\{[^}]*line-height:\s*var\(--eb-code-line-height\)/s);
+  assert.match(css, /\.wx-source-line-numbers\s*\{[^}]*padding:\s*var\(--eb-code-padding-y\) 10px var\(--eb-code-padding-y\) 0/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*font-family:\s*var\(--eb-code-font\)/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*font-size:\s*var\(--eb-code-font-size\)/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*line-height:\s*var\(--eb-code-line-height\)/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*padding:\s*var\(--eb-code-padding-y\) 18px/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*letter-spacing:\s*0/s);
+  assert.match(css, /\.wx-source-highlight,\s*\n\.wx-source-textarea\s*\{[^}]*font-variant-ligatures:\s*none/s);
+  assert.doesNotMatch(css, /\.wx-src-token-comment\s*\{[^}]*font-style:\s*italic/s);
+});

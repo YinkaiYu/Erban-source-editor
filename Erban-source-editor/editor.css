@@ -22,6 +22,10 @@
   --eb-radius-sm: 6px;
   --eb-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05);
   --eb-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --eb-code-font: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace;
+  --eb-code-font-size: 13.5px;
+  --eb-code-line-height: 22px;
+  --eb-code-padding-y: 14px;
 }
 
 /* ---- Toolbar Button ---- */
@@ -328,10 +332,10 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   background: #16181d !important;
   color: #4a5058 !important;
   text-align: right !important;
-  padding: 14px 10px 14px 0 !important;
-  font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
-  font-size: 13px !important;
-  line-height: 1.65 !important;
+  padding: var(--eb-code-padding-y) 10px var(--eb-code-padding-y) 0 !important;
+  font-family: var(--eb-code-font) !important;
+  font-size: var(--eb-code-font-size) !important;
+  line-height: var(--eb-code-line-height) !important;
   user-select: none !important;
   overflow: hidden !important;
   border-right: 1px solid rgba(255, 255, 255, 0.04) !important;
@@ -345,11 +349,14 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  padding: 14px 18px !important;
+  padding: var(--eb-code-padding-y) 18px !important;
   margin: 0 !important;
-  font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
-  font-size: 13.5px !important;
-  line-height: 1.65 !important;
+  font-family: var(--eb-code-font) !important;
+  font-size: var(--eb-code-font-size) !important;
+  line-height: var(--eb-code-line-height) !important;
+  letter-spacing: 0 !important;
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0, "calt" 0 !important;
   tab-size: 2 !important;
   -moz-tab-size: 2 !important;
   white-space: pre !important;
@@ -398,7 +405,6 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
 }
 .wx-src-token-comment {
   color: #6f7782 !important;
-  font-style: italic !important;
 }
 .wx-src-token-text {
   color: #d4d8df !important;
