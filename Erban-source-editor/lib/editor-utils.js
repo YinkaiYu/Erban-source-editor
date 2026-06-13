@@ -174,6 +174,138 @@
     return formatSourceHTML(html);
   }
 
+  function escapeHTML(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function spanToken(className, value) {
+    return '<span class="' + className + '">' + escapeHTML(value) + '</span>';
+  }
+
+  function readName(value, start) {
+    var i = start;
+    while (i < value.length && !/[\s=/>]/.test(value.charAt(i))) i++;
+    return i;
+  }
+
+  function readQuoted(value, start) {
+    var quote = value.charAt(start);
+    var i = start + 1;
+    while (i < value.length) {
+      if (value.charAt(i) === quote) return i + 1;
+      i++;
+    }
+    return value.length;
+  }
+
+  function nextNonSpaceIndex(value, start) {
+    var i = start;
+    while (i < value.length && /\s/.test(value.charAt(i))) i++;
+    return i;
+  }
+
+  function highlightTagSource(tag) {
+    if (/^<!--/.test(tag)) return spanToken('wx-src-token-comment', tag);
+    if (/^<!/i.test(tag) || /^<\?/.test(tag)) return spanToken('wx-src-token-tag', tag);
+
+    var result = '';
+    var i = 0;
+    var expectingTagName = false;
+
+    while (i < tag.length) {
+      var ch = tag.charAt(i);
+
+      if (ch === '<') {
+        if (tag.charAt(i + 1) === '/') {
+          result += spanToken('wx-src-token-tag', '</');
+          i += 2;
+        } else {
+          result += spanToken('wx-src-token-tag', '<');
+          i++;
+        }
+        expectingTagName = true;
+        continue;
+      }
+
+      if (expectingTagName) {
+        if (/\s/.test(ch)) {
+          result += escapeHTML(ch);
+          i++;
+          continue;
+        }
+        var tagNameEnd = readName(tag, i);
+        result += spanToken('wx-src-token-tag', tag.slice(i, tagNameEnd));
+        i = tagNameEnd;
+        expectingTagName = false;
+        continue;
+      }
+
+      if (ch === '"' || ch === "'") {
+        var quotedEnd = readQuoted(tag, i);
+        result += spanToken('wx-src-token-string', tag.slice(i, quotedEnd));
+        i = quotedEnd;
+        continue;
+      }
+
+      if (ch === '/' || ch === '>') {
+        result += spanToken('wx-src-token-tag', ch);
+        i++;
+        continue;
+      }
+
+      if (/\s/.test(ch) || ch === '=') {
+        result += escapeHTML(ch);
+        i++;
+        continue;
+      }
+
+      var nameEnd = readName(tag, i);
+      var nextIndex = nextNonSpaceIndex(tag, nameEnd);
+      var className = tag.charAt(nextIndex) === '=' ? 'wx-src-token-attr' : 'wx-src-token-text';
+      result += spanToken(className, tag.slice(i, nameEnd));
+      i = nameEnd;
+    }
+
+    return result;
+  }
+
+  function highlightHTMLSource(html) {
+    var tokens = tokenizeHTML(html);
+    var result = '';
+    for (var i = 0; i < tokens.length; i++) {
+      if (tokens[i].type === 'tag') {
+        result += highlightTagSource(tokens[i].value);
+      } else {
+        result += escapeHTML(tokens[i].value);
+      }
+    }
+    return result || '<br>';
+  }
+
+  function findTextMatches(text, query, options) {
+    var value = String(text || '');
+    var needle = String(query || '');
+    if (!needle) return [];
+
+    var caseSensitive = !!(options && options.caseSensitive);
+    var haystack = caseSensitive ? value : value.toLowerCase();
+    var target = caseSensitive ? needle : needle.toLowerCase();
+    var matches = [];
+    var index = haystack.indexOf(target);
+
+    while (index !== -1) {
+      matches.push({ start: index, end: index + needle.length });
+      index = haystack.indexOf(target, index + needle.length);
+    }
+
+    return matches;
+  }
+
   function getInlineStyleValue(styleText, propName) {
     var parts = String(styleText || '').split(';');
     var target = String(propName || '').toLowerCase();
@@ -263,7 +395,9 @@
   }
 
   return {
+    findTextMatches: findTextMatches,
     formatSourceHTML: formatSourceHTML,
+    highlightHTMLSource: highlightHTMLSource,
     isToggleShortcut: isToggleShortcut,
     isSupportedImportFile: isSupportedImportFile,
     mergeParagraphStyle: mergeParagraphStyle,

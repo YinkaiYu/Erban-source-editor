@@ -239,6 +239,61 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   display: none !important;
 }
 
+/* ---- Search / replace ---- */
+.wx-source-searchbar {
+  display: none !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 42px !important;
+  padding: 7px 14px !important;
+  background: #1d2027 !important;
+  border-bottom: 1px solid var(--eb-slate-border) !important;
+}
+.wx-source-searchbar.visible {
+  display: flex !important;
+}
+.wx-source-search-input {
+  height: 28px !important;
+  min-width: 160px !important;
+  padding: 0 10px !important;
+  border: 1px solid var(--eb-slate-border) !important;
+  border-radius: var(--eb-radius-sm) !important;
+  background: #14171c !important;
+  color: var(--eb-text-bright) !important;
+  outline: none !important;
+  font-size: 12px !important;
+}
+.wx-source-search-input:focus {
+  border-color: var(--eb-jade) !important;
+  box-shadow: 0 0 0 2px var(--eb-jade-glow) !important;
+}
+.wx-source-replace-input {
+  min-width: 180px !important;
+}
+.wx-source-search-count {
+  min-width: 44px !important;
+  color: var(--eb-text-dim) !important;
+  font-size: 12px !important;
+  text-align: center !important;
+  font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
+}
+.wx-source-search-btn {
+  height: 28px !important;
+  padding: 4px 10px !important;
+  min-width: 30px !important;
+}
+.wx-source-search-case {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  color: var(--eb-text-dim) !important;
+  font-size: 12px !important;
+  user-select: none !important;
+}
+.wx-source-search-case input {
+  margin: 0 !important;
+}
+
 /* ---- Body ---- */
 .wx-source-body {
   flex: 1 !important;
@@ -255,6 +310,15 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   min-width: 0 !important;
   border-right: 1px solid var(--eb-slate-border) !important;
   background: #16181d !important;
+}
+
+.wx-source-editor-wrap {
+  position: relative !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  background: #16181d !important;
+  overflow: hidden !important;
 }
 
 /* ---- Line numbers ---- */
@@ -274,33 +338,70 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   white-space: pre !important;
 }
 
-/* ---- Textarea ---- */
+/* ---- Source editor and syntax highlight ---- */
+.wx-source-highlight,
 .wx-source-textarea {
-  flex: 1 !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
   padding: 14px 18px !important;
   margin: 0 !important;
-  border: none !important;
-  outline: none !important;
-  resize: none !important;
   font-family: "JetBrains Mono", "Cascadia Code", "Consolas", "Monaco", monospace !important;
   font-size: 13.5px !important;
   line-height: 1.65 !important;
   tab-size: 2 !important;
   -moz-tab-size: 2 !important;
-  background: #16181d !important;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  overflow-wrap: normal !important;
+}
+.wx-source-highlight {
+  border: none !important;
   color: #c8ccd4 !important;
-  white-space: pre-wrap !important;
-  word-wrap: break-word !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  min-width: 100% !important;
+}
+.wx-source-textarea {
+  border: none !important;
+  outline: none !important;
+  resize: none !important;
+  background: transparent !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
   caret-color: var(--eb-jade) !important;
 }
 .wx-source-textarea::placeholder {
   color: #4a5058 !important;
+  -webkit-text-fill-color: #4a5058 !important;
   font-style: italic !important;
 }
 .wx-source-textarea:focus {
   outline: none !important;
+}
+.wx-source-textarea::selection {
+  background: rgba(0, 168, 107, 0.28) !important;
+  color: transparent !important;
+}
+.wx-src-token-tag {
+  color: #ff8f70 !important;
+}
+.wx-src-token-attr {
+  color: #7dc4ff !important;
+}
+.wx-src-token-string {
+  color: #9ad97f !important;
+}
+.wx-src-token-comment {
+  color: #6f7782 !important;
+  font-style: italic !important;
+}
+.wx-src-token-text {
+  color: #d4d8df !important;
 }
 .wx-source-textarea::-webkit-scrollbar {
   width: 6px !important;

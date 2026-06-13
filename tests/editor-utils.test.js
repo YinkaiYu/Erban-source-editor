@@ -5,7 +5,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { test } = require('node:test');
 const {
+  findTextMatches,
   formatSourceHTML,
+  highlightHTMLSource,
   isToggleShortcut,
   isSupportedImportFile,
   mergeParagraphStyle,
@@ -71,6 +73,31 @@ test('source formatter preserves horizontal swipe containers and image attribute
   assert.match(result, /data-backh="600"/);
 });
 
+test('highlights html source while escaping rendered markup', () => {
+  const result = highlightHTMLSource('<section style="color:red">Hi & bye</section><!-- note -->');
+
+  assert.match(result, /wx-src-token-tag/);
+  assert.match(result, /wx-src-token-attr/);
+  assert.match(result, /wx-src-token-string/);
+  assert.match(result, /wx-src-token-comment/);
+  assert.match(result, /&lt;/);
+  assert.match(result, /section/);
+  assert.match(result, /Hi &amp; bye/);
+  assert.doesNotMatch(result, /<section style/);
+});
+
+test('finds text matches with case sensitivity options', () => {
+  assert.deepEqual(findTextMatches('Alpha alpha ALPHA', 'alpha'), [
+    { start: 0, end: 5 },
+    { start: 6, end: 11 },
+    { start: 12, end: 17 }
+  ]);
+  assert.deepEqual(findTextMatches('Alpha alpha ALPHA', 'alpha', { caseSensitive: true }), [
+    { start: 6, end: 11 }
+  ]);
+  assert.deepEqual(findTextMatches('abc', ''), []);
+});
+
 test('prepares preview html by removing active content and preserving layout styles', () => {
   const html = '<section style="display:flex;width:200%;overflow-x:auto" onclick="bad()"><script>alert(1)</script><img data-src="https://example.com/a.png"><a href="javascript:alert(1)">x</a></section>';
   const result = preparePreviewHTML(html);
@@ -115,4 +142,16 @@ test('preview stylesheet supports WeChat links and does not collapse swipe track
   assert.match(css, /\.wx-source-preview-content\s+a\.normal_text_link::before/);
   assert.match(css, /\.wx-source-preview-content\s+\[style\*="width: 200%"\]/);
   assert.match(css, /\.wx-source-preview-content\s+\[style\*="width: 300%"\]/);
+});
+
+test('editor surface includes syntax highlighting and find controls', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../Erban-source-editor/editor.css'), 'utf8');
+  const script = fs.readFileSync(path.join(__dirname, '../Erban-source-editor/content-isolated.js'), 'utf8');
+
+  assert.match(css, /\.wx-source-highlight/);
+  assert.match(css, /\.wx-src-token-tag/);
+  assert.match(script, /id="wsrc-searchbar"/);
+  assert.match(script, /id="wsrc-find-input"/);
+  assert.match(script, /highlightHTMLSource/);
+  assert.match(script, /toLowerCase\(\) === 'f'/);
 });
