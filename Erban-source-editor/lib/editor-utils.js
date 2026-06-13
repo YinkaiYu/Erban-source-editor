@@ -174,6 +174,10 @@
     return formatSourceHTML(html);
   }
 
+  function removeSourceFormattingWhitespace(html) {
+    return String(html || '').replace(/>\s*[\r\n]+\s*</g, '><');
+  }
+
   function escapeHTML(value) {
     return String(value || '')
       .replace(/&/g, '&amp;')
@@ -306,6 +310,23 @@
     return matches;
   }
 
+  function getLineIndexAtOffset(text, offset) {
+    var value = String(text || '');
+    var safeOffset = Math.max(0, Math.min(Number(offset) || 0, value.length));
+    var line = 0;
+    for (var i = 0; i < safeOffset; i++) {
+      if (value.charAt(i) === '\n') line++;
+    }
+    return line;
+  }
+
+  function getScrollTopForTextOffset(text, offset, options) {
+    var lineHeight = Number(options && options.lineHeight) || 20;
+    var viewportHeight = Number(options && options.viewportHeight) || 0;
+    var lineIndex = getLineIndexAtOffset(text, offset);
+    return Math.max(0, Math.round(lineIndex * lineHeight - viewportHeight / 2 + lineHeight / 2));
+  }
+
   function getInlineStyleValue(styleText, propName) {
     var parts = String(styleText || '').split(';');
     var target = String(propName || '').toLowerCase();
@@ -388,15 +409,17 @@
 
   function preparePreviewHTML(html) {
     if (!html) return '';
+    var source = removeSourceFormattingWhitespace(html);
     if (typeof DOMParser !== 'undefined' && typeof NodeFilter !== 'undefined') {
-      return preparePreviewWithDOM(String(html));
+      return preparePreviewWithDOM(source);
     }
-    return preparePreviewWithStrings(String(html));
+    return preparePreviewWithStrings(source);
   }
 
   return {
     findTextMatches: findTextMatches,
     formatSourceHTML: formatSourceHTML,
+    getScrollTopForTextOffset: getScrollTopForTextOffset,
     highlightHTMLSource: highlightHTMLSource,
     isToggleShortcut: isToggleShortcut,
     isSupportedImportFile: isSupportedImportFile,

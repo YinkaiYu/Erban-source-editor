@@ -7,6 +7,7 @@ const { test } = require('node:test');
 const {
   findTextMatches,
   formatSourceHTML,
+  getScrollTopForTextOffset,
   highlightHTMLSource,
   isToggleShortcut,
   isSupportedImportFile,
@@ -73,6 +74,16 @@ test('source formatter preserves horizontal swipe containers and image attribute
   assert.match(result, /data-backh="600"/);
 });
 
+test('formatted source renders the same preview html as unformatted fixture source', () => {
+  const fixture = fs.readFileSync(path.join(__dirname, 'fixtures/example2.html'), 'utf8');
+  const sourceLikeEditorAPI = fixture.replace(/>\s+</g, '><').trim();
+  const formatted = formatSourceHTML(sourceLikeEditorAPI);
+
+  assert.notEqual(formatted, sourceLikeEditorAPI);
+  assert.match(formatted, /\n\s+<section/);
+  assert.equal(preparePreviewHTML(formatted), preparePreviewHTML(sourceLikeEditorAPI));
+});
+
 test('highlights html source while escaping rendered markup', () => {
   const result = highlightHTMLSource('<section style="color:red">Hi & bye</section><!-- note -->');
 
@@ -96,6 +107,14 @@ test('finds text matches with case sensitivity options', () => {
     { start: 6, end: 11 }
   ]);
   assert.deepEqual(findTextMatches('abc', ''), []);
+});
+
+test('calculates scroll position for a text offset so find can reveal matches', () => {
+  const text = Array.from({ length: 80 }, (_, index) => 'line ' + index).join('\n');
+  const offset = text.indexOf('line 60');
+
+  assert.equal(getScrollTopForTextOffset(text, offset, { lineHeight: 20, viewportHeight: 200 }), 1110);
+  assert.equal(getScrollTopForTextOffset(text, 0, { lineHeight: 20, viewportHeight: 200 }), 0);
 });
 
 test('prepares preview html by removing active content and preserving layout styles', () => {
@@ -153,5 +172,7 @@ test('editor surface includes syntax highlighting and find controls', () => {
   assert.match(script, /id="wsrc-searchbar"/);
   assert.match(script, /id="wsrc-find-input"/);
   assert.match(script, /highlightHTMLSource/);
+  assert.match(script, /scrollSelectionIntoView/);
+  assert.match(script, /getScrollTopForTextOffset/);
   assert.match(script, /toLowerCase\(\) === 'f'/);
 });

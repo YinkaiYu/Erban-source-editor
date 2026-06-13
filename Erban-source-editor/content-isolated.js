@@ -366,8 +366,18 @@
         var match = searchState.matches[searchState.activeIndex];
         textarea.focus();
         textarea.setSelectionRange(match.start, match.end);
+        scrollSelectionIntoView(match.start);
         if (restoreFocus && restoreFocus.focus) restoreFocus.focus();
         searchCount.textContent = (searchState.activeIndex + 1) + '/' + searchState.matches.length;
+      }
+      function scrollSelectionIntoView(offset) {
+        if (!utils.getScrollTopForTextOffset) return;
+        var lineHeight = parseFloat(window.getComputedStyle(textarea).lineHeight) || 22;
+        textarea.scrollTop = utils.getScrollTopForTextOffset(textarea.value, offset, {
+          lineHeight: lineHeight,
+          viewportHeight: textarea.clientHeight
+        });
+        syncEditorScroll();
       }
       function goToMatch(delta, keepSearchFocus) {
         updateSearch(false, keepSearchFocus);
