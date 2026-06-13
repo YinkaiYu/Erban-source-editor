@@ -26,6 +26,7 @@
   --eb-code-font-size: 13.5px;
   --eb-code-line-height: 22px;
   --eb-code-padding-y: 14px;
+  --eb-code-scrollbar-size: 6px;
 }
 
 /* ---- Toolbar Button ---- */
@@ -337,9 +338,11 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
   font-size: var(--eb-code-font-size) !important;
   line-height: var(--eb-code-line-height) !important;
   user-select: none !important;
-  overflow: hidden !important;
+  overflow-x: scroll !important;
+  overflow-y: hidden !important;
   border-right: 1px solid rgba(255, 255, 255, 0.04) !important;
   white-space: pre !important;
+  scrollbar-color: transparent transparent !important;
 }
 
 /* ---- Source editor and syntax highlight ---- */
@@ -366,10 +369,11 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
 .wx-source-highlight {
   border: none !important;
   color: #c8ccd4 !important;
-  overflow: hidden !important;
+  overflow: scroll !important;
   pointer-events: none !important;
   user-select: none !important;
   min-width: 100% !important;
+  scrollbar-color: transparent transparent !important;
 }
 .wx-source-textarea {
   border: none !important;
@@ -412,8 +416,20 @@ div.wx-edit-source-btn[style*="fixed"]:hover {
 .wx-src-token-text {
   color: #d4d8df !important;
 }
+.wx-source-highlight::-webkit-scrollbar,
+.wx-source-line-numbers::-webkit-scrollbar {
+  width: var(--eb-code-scrollbar-size) !important;
+  height: var(--eb-code-scrollbar-size) !important;
+}
+.wx-source-highlight::-webkit-scrollbar-track,
+.wx-source-line-numbers::-webkit-scrollbar-track,
+.wx-source-highlight::-webkit-scrollbar-thumb,
+.wx-source-line-numbers::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
 .wx-source-textarea::-webkit-scrollbar {
-  width: 6px !important;
+  width: var(--eb-code-scrollbar-size) !important;
+  height: var(--eb-code-scrollbar-size) !important;
 }
 .wx-source-textarea::-webkit-scrollbar-track {
   background: transparent !important;
